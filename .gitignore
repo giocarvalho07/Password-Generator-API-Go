@@ -1,0 +1,32 @@
+# Binários
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Teste binário
+*.test
+
+# Saída de go coverage
+*.out
+
+# Dependências de Go
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# SDD (Specification Documents)
+sdd-password-validate/

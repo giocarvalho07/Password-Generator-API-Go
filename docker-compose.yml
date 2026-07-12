@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - MIN_LENGTH=8
+      - MAX_LENGTH=64
+      - MIN_SPECIAL_CHARS=1
+      - MIN_ENTROPY=40
+      - MAX_CONSECUTIVE=2
+    restart: unless-stopped

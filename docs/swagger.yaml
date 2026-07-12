@@ -1,0 +1,147 @@
+basePath: /
+definitions:
+  handlers.ErrorResponse:
+    properties:
+      error:
+        example: invalid request
+        type: string
+    type: object
+  handlers.GenerateRequest:
+    properties:
+      length:
+        example: 16
+        type: integer
+      use_lowercase:
+        example: true
+        type: boolean
+      use_numbers:
+        example: true
+        type: boolean
+      use_symbols:
+        example: true
+        type: boolean
+      use_uppercase:
+        example: true
+        type: boolean
+    type: object
+  handlers.GenerateResponse:
+    properties:
+      generated:
+        example: "2026-07-11T14:30:00Z"
+        type: string
+      password:
+        example: xH7@kL9#mP2&
+        type: string
+      validation:
+        $ref: '#/definitions/handlers.ValidationResponse'
+    type: object
+  handlers.HealthResponse:
+    properties:
+      status:
+        example: healthy
+        type: string
+      timestamp:
+        example: "2026-07-11T14:30:00Z"
+        type: string
+    type: object
+  handlers.ValidateRequest:
+    properties:
+      password:
+        example: xH7@kL9#mP2&
+        type: string
+    required:
+    - password
+    type: object
+  handlers.ValidationResponse:
+    properties:
+      entropy:
+        example: 72.54
+        type: number
+      errors:
+        items:
+          type: string
+        type: array
+      is_valid:
+        example: true
+        type: boolean
+      strength:
+        example: strong
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for generating and validating secure passwords
+  title: Password Generator API
+  version: "1.0"
+paths:
+  /api/v1/password/generate:
+    post:
+      consumes:
+      - application/json
+      description: Generate a secure password with configurable options
+      parameters:
+      - description: Password generation options
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.GenerateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.GenerateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+      summary: Generate a new password
+      tags:
+      - password
+  /api/v1/password/validate:
+    post:
+      consumes:
+      - application/json
+      description: Validate password strength and complexity
+      parameters:
+      - description: Password to validate
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.ValidateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.ValidationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handlers.ErrorResponse'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/handlers.ValidationResponse'
+      summary: Validate a password
+      tags:
+      - password
+  /health:
+    get:
+      description: Check if the API is running
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.HealthResponse'
+      summary: Health check
+      tags:
+      - health
+swagger: "2.0"

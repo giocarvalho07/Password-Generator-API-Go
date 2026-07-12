@@ -1,0 +1,219 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API for generating and validating secure passwords",
+        "title": "Password Generator API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/v1/password/generate": {
+            "post": {
+                "description": "Generate a secure password with configurable options",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "password"
+                ],
+                "summary": "Generate a new password",
+                "parameters": [
+                    {
+                        "description": "Password generation options",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.GenerateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.GenerateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/password/validate": {
+            "post": {
+                "description": "Validate password strength and complexity",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "password"
+                ],
+                "summary": "Validate a password",
+                "parameters": [
+                    {
+                        "description": "Password to validate",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ErrorResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.ValidationResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Check if the API is running",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.HealthResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "invalid request"
+                }
+            }
+        },
+        "handlers.GenerateRequest": {
+            "type": "object",
+            "properties": {
+                "length": {
+                    "type": "integer",
+                    "example": 16
+                },
+                "use_lowercase": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "use_numbers": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "use_symbols": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "use_uppercase": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "handlers.GenerateResponse": {
+            "type": "object",
+            "properties": {
+                "generated": {
+                    "type": "string",
+                    "example": "2026-07-11T14:30:00Z"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "xH7@kL9#mP2\u0026"
+                },
+                "validation": {
+                    "$ref": "#/definitions/handlers.ValidationResponse"
+                }
+            }
+        },
+        "handlers.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "example": "healthy"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2026-07-11T14:30:00Z"
+                }
+            }
+        },
+        "handlers.ValidateRequest": {
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "example": "xH7@kL9#mP2\u0026"
+                }
+            }
+        },
+        "handlers.ValidationResponse": {
+            "type": "object",
+            "properties": {
+                "entropy": {
+                    "type": "number",
+                    "example": 72.54
+                },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "is_valid": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "strength": {
+                    "type": "string",
+                    "example": "strong"
+                }
+            }
+        }
+    }
+}
